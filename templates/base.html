@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{% block title %}Shift Rota{% endblock %}</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .center {
+        text-align: center;
+      }
+      h1 {
+        text-align: center;
+      }
+      .nav a {
+        margin: 0 10px;
+        text-decoration: none;
+        color: blue;
+      }
+      .nav a:hover {
+        text-decoration: underline;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 20px;
+      }
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 6px;
+        text-align: center;
+        vertical-align: top;
+      }
+      th {
+        background-color: #f4f4f4;
+      }
+      h2 {
+        margin-top: 40px;
+      }
+    </style>
+    <!-- Include jQuery and DataTables CSS and JS -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="//cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="//cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    {% block extra_head %}
+    <script>
+      $(document).ready(function () {
+        $("table.dataTable").DataTable({
+          pageLength: -1,
+          lengthMenu: [
+            [-1, 10, 25, 50],
+            ["All", 10, 25, 50],
+          ],
+        });
+      });
+    </script>
+    {% endblock %}
+  </head>
+  <body>
+    <div class="nav center">
+      <a href="{{ url_for('index') }}">Weekly Shifts</a> |
+      <a href="{{ url_for('staff_view') }}">Staff Summary</a> |
+      <a href="{{ url_for('schedule_view') }}">Shift Schedule</a> |
+      <a href="{{ url_for('region_shifts_view') }}">Region Shifts</a> |
+      <a href="{{ url_for('individual_shifts_view') }}">Individual Shifts</a> |
+      <a href="{{ url_for('calendar_view') }}">Weekly Calendar</a>
+    </div>
+    {% block content %}{% endblock %}
+  </body>
+</html>

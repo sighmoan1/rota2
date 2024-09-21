@@ -1,0 +1,28 @@
+{% extends "base.html" %} {% block title %}Region Shifts{% endblock %} {% block
+content %}
+<h1>Region Shifts</h1>
+<table class="dataTable">
+  <thead>
+    <tr>
+      <th>Region</th>
+      <th>Week</th>
+      <th>Day</th>
+      <th>Shift Time</th>
+      <th>Staff</th>
+      <th>Role</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for region, shifts in region_shifts.items() %} {% for shift in shifts %}
+    <tr>
+      <td>{{ region }}</td>
+      <td>{{ shift['Week'] }}</td>
+      <td>{{ shift['Day'] }}</td>
+      <td>{{ shift['Shift Time'] }}</td>
+      <td>{{ shift['Staff'] }}</td>
+      <td>{{ shift['Role'] }}</td>
+    </tr>
+    {% endfor %} {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

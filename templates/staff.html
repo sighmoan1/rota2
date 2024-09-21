@@ -1,0 +1,65 @@
+{% extends "base.html" %} {% block title %}Staff Shift Summary{% endblock %} {%
+block content %}
+<h1>Staff Shift Summary</h1>
+<table class="dataTable">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Region</th>
+      <th>Role</th>
+      <th>FTE</th>
+      <th>Expected Weeknight Shifts</th>
+      <th>Assigned Weeknight Shifts</th>
+      <th>Difference</th>
+      <th>Expected Weekend Shifts</th>
+      <th>Assigned Weekend Shifts</th>
+      <th>Difference</th>
+      <th>Total Expected Shifts</th>
+      <th>Total Assigned Shifts</th>
+      <th>Total Difference</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for s in staff %}
+    <tr>
+      <td>{{ s.name }}</td>
+      <td>{{ s.region }}</td>
+      <td>{{ s.role }}</td>
+      <td>{{ s.fte }}</td>
+      <td>{{ s.expected_weeknight_shifts }}</td>
+      <td>{{ s.weeknight_shifts }}</td>
+      <td>
+        {% set diff_weeknight = s.weeknight_shifts - s.expected_weeknight_shifts
+        %}
+        <span
+          class="{% if diff_weeknight < 0 %}negative{% elif diff_weeknight > 0 %}positive{% endif %}"
+        >
+          {{ diff_weeknight }}
+        </span>
+      </td>
+      <td>{{ s.expected_weekend_shifts }}</td>
+      <td>{{ s.weekend_shifts }}</td>
+      <td>
+        {% set diff_weekend = s.weekend_shifts - s.expected_weekend_shifts %}
+        <span
+          class="{% if diff_weekend < 0 %}negative{% elif diff_weekend > 0 %}positive{% endif %}"
+        >
+          {{ diff_weekend }}
+        </span>
+      </td>
+      <td>{{ s.expected_weeknight_shifts + s.expected_weekend_shifts }}</td>
+      <td>{{ s.weeknight_shifts + s.weekend_shifts }}</td>
+      <td>
+        {% set total_diff = (s.weeknight_shifts + s.weekend_shifts) -
+        (s.expected_weeknight_shifts + s.expected_weekend_shifts) %}
+        <span
+          class="{% if total_diff < 0 %}negative{% elif total_diff > 0 %}positive{% endif %}"
+        >
+          {{ total_diff }}
+        </span>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

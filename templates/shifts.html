@@ -1,0 +1,31 @@
+{% extends "base.html" %} {% block title %}Weekly Shifts{% endblock %} {% block
+content %}
+<h1>52-Week Shift Rota</h1>
+<table class="dataTable">
+  <thead>
+    <tr>
+      <th>Week</th>
+      <th>Shift Time</th>
+      <th>Role</th>
+      <th>Staff Assigned</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for week in assignments %} {% for shift_time, roles in
+    week['Shifts'].items() %} {% for role, staff_list in roles.items() %}
+    <tr>
+      <td>{{ week['Week'] }}</td>
+      <td>{{ shift_time }}</td>
+      <td>{{ role }}</td>
+      <td>
+        <ul>
+          {% for staff in staff_list %}
+          <li>{{ staff.name }} ({{ staff.region }}, FTE: {{ staff.fte }})</li>
+          {% endfor %}
+        </ul>
+      </td>
+    </tr>
+    {% endfor %} {% endfor %} {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

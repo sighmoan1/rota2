@@ -1,0 +1,53 @@
+{% extends "base.html" %} {% block title %}Individual Shifts{% endblock %} {%
+block content %}
+<h1>Individual Shifts</h1>
+<table class="dataTable">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Region</th>
+      <th>Role</th>
+      <th>Weeknight Shifts</th>
+      <th>Weekend Shifts</th>
+      <th>Total Shifts</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for s in staff %}
+    <tr>
+      <td><a href="#{{ s.name }}">{{ s.name }}</a></td>
+      <td>{{ s.region }}</td>
+      <td>{{ s.role }}</td>
+      <td>{{ s.weeknight_shifts }}</td>
+      <td>{{ s.weekend_shifts }}</td>
+      <td>{{ s.weeknight_shifts + s.weekend_shifts }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% for s in staff %}
+<div class="staff-member" id="{{ s.name }}">
+  <h2>{{ s.name }} ({{ s.region }}) - {{ s.role }}</h2>
+  <table class="dataTable">
+    <thead>
+      <tr>
+        <th>Week</th>
+        <th>Day</th>
+        <th>Shift Time</th>
+        <th>Role</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for shift in s.shift_assignments %}
+      <tr>
+        <td>{{ shift['Week'] }}</td>
+        <td>{{ shift['Day'] }}</td>
+        <td>{{ shift['Shift Time'] }}</td>
+        <td>{{ shift['Role'] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endfor %} {% endblock %}
