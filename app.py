@@ -1,46 +1,38 @@
 from flask import Flask, render_template
 from collections import defaultdict
-import random
+import csv
 
 app = Flask(__name__)
 
-# Define regions
+# Define regions and roles
 regions = [
     'Northern Ireland', 'Wales', 'Scotland', 'London',
     'North', 'Central', 'South East', 'South and Channel Islands'
 ]
 
-# Roles
 roles = ['Duty Manager', 'Tactical Lead']
 
-# Generate sample staff data
-def generate_staff():
+# Read staff data from CSV file
+def read_staff_from_csv():
     staff = []
-    names = [
-        'Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Grace', 'Heidi',
-        'Ivan', 'Judy', 'Karl', 'Liam', 'Mallory', 'Niaj', 'Olivia', 'Peggy',
-        'Quentin', 'Ruth', 'Sybil', 'Trent', 'Uma', 'Victor', 'Walter', 'Xena',
-        'Yvonne', 'Zach', 'Anna', 'Brian', 'Catherine', 'David', 'Ella', 'Fiona',
-        'George', 'Hannah', 'Ian', 'Julia', 'Kevin', 'Laura'
-    ]
-
-    fte_options = [1.0, 0.8, 0.6]
-    for name in names[:38]:
-        staff.append({
-            'name': name,
-            'region': random.choice(regions),
-            'role': random.choice(roles),
-            'fte': random.choice(fte_options),
-            'assigned_shifts': 0,  # Total assigned shifts
-            'weeknight_shifts': 0,
-            'weekend_shifts': 0,
-            'expected_weeknight_shifts': 0,
-            'expected_weekend_shifts': 0,
-            'shift_assignments': []  # List of shifts assigned to the staff member
-        })
+    with open('staff.csv', newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            staff.append({
+                'name': row['name'],
+                'region': row['region'],
+                'role': row['role'],
+                'fte': float(row['fte']),
+                'assigned_shifts': 0,
+                'weeknight_shifts': 0,
+                'weekend_shifts': 0,
+                'expected_weeknight_shifts': 0,
+                'expected_weekend_shifts': 0,
+                'shift_assignments': []
+            })
     return staff
 
-staff = generate_staff()
+staff = read_staff_from_csv()
 
 # Shifts per week
 shifts = {
@@ -58,7 +50,6 @@ def calculate_total_fte(role):
     return sum(s['fte'] for s in staff if s['role'] == role)
 
 def calculate_staff_quotas():
-    # Total weeks
     total_weeks = 52
 
     # Calculate total shifts per role and shift time over all weeks
