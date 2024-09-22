@@ -1,0 +1,24 @@
+{% extends "base.html" %} {% block title %}Staff List{% endblock %} {% block
+content %}
+<h1>Staff List</h1>
+<table class="dataTable">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Region</th>
+      <th>Role</th>
+      <th>FTE</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for s in staff %}
+    <tr>
+      <td>{{ s['name'] }}</td>
+      <td>{{ s['region'] }}</td>
+      <td>{{ s['role'] }}</td>
+      <td>{{ s['fte'] }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

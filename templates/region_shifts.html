@@ -10,11 +10,11 @@ extra_head %}
       ],
       order: [
         [1, "asc"],
-        [6, "asc"],
+        [5, "asc"],
       ],
       columnDefs: [
-        { orderData: [6], targets: 2 },
-        { visible: false, targets: 6 },
+        { orderData: [5], targets: 2 },
+        { visible: false, targets: 5 },
       ],
     });
   });
@@ -27,7 +27,6 @@ extra_head %}
       <th>Region</th>
       <th>Week</th>
       <th>Day</th>
-      <th>Shift Time</th>
       <th>Staff</th>
       <th>Role</th>
       <th>DayOrder</th>
@@ -40,7 +39,6 @@ extra_head %}
       <td>{{ shift['Region'] }}</td>
       <td>{{ shift['Week'] }}</td>
       <td>{{ shift['Day'] }}</td>
-      <td>{{ shift['Shift Time'] }}</td>
       <td>{{ shift['Staff'] }}</td>
       <td>{{ shift['Role'] }}</td>
       <td>{{ shift['DayOrder'] }}</td>

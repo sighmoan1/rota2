@@ -25,7 +25,13 @@
       <a href="{{ url_for('schedule_view') }}">Shift Schedule</a> |
       <a href="{{ url_for('region_shifts_view') }}">Region Shifts</a> |
       <a href="{{ url_for('individual_shifts_view') }}">Individual Shifts</a> |
-      <a href="{{ url_for('calendar_view') }}">Weekly Calendar</a>
+      <a href="{{ url_for('calendar_view') }}">Weekly Calendar</a> |
+      <a href="{{ url_for('staff_list_view') }}">Staff List</a> |
+      <a href="{{ url_for('patterns_by_role_view') }}">Patterns by Role</a> |
+      <a href="{{ url_for('patterns_combined_view') }}">Patterns Combined</a> |
+      <a href="{{ url_for('patterns_combined_with_regions_view') }}"
+        >Patterns with Regions</a
+      >
     </div>
     {% block content %}{% endblock %}
   </body>

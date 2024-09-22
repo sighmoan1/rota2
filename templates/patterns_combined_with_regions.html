@@ -1,0 +1,35 @@
+{% extends "base.html" %} {% block title %}Patterns Combined with Regions{%
+endblock %} {% block content %}
+<h1>Patterns Combined with Regions Count</h1>
+
+<table class="dataTable">
+  <thead>
+    <tr>
+      <th>Week</th>
+      {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+      'Saturday', 'Sunday'] %}
+      <th>{{ day }} DM 1</th>
+      <th>{{ day }} DM 2</th>
+      <th>{{ day }} TL 1</th>
+      <th>{{ day }} TL 2</th>
+      <th>{{ day }} Regions</th>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for week_pattern in patterns %}
+    <tr>
+      <td>{{ week_pattern['Week'] }}</td>
+      {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+      'Saturday', 'Sunday'] %}
+      <td>{{ week_pattern[day + ' DM 1'] }}</td>
+      <td>{{ week_pattern[day + ' DM 2'] }}</td>
+      <td>{{ week_pattern[day + ' TL 1'] }}</td>
+      <td>{{ week_pattern[day + ' TL 2'] }}</td>
+      <td>{{ week_pattern[day + ' Regions'] }}</td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

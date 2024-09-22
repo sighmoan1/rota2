@@ -1,0 +1,31 @@
+{% extends "base.html" %} {% block title %}Patterns by Role{% endblock %} {%
+block content %}
+<h1>Patterns Split by Role</h1>
+
+{% for role, weeks in patterns.items() %}
+<h2>{{ role }}s</h2>
+<table class="dataTable">
+  <thead>
+    <tr>
+      <th>Week</th>
+      {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+      'Saturday', 'Sunday'] %}
+      <th>{{ day }} {{ role[:2] }} 1</th>
+      <th>{{ day }} {{ role[:2] }} 2</th>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for week_pattern in weeks %}
+    <tr>
+      <td>{{ week_pattern['Week'] }}</td>
+      {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+      'Saturday', 'Sunday'] %}
+      <td>{{ week_pattern[day + ' ' + role[:2] + ' 1'] }}</td>
+      <td>{{ week_pattern[day + ' ' + role[:2] + ' 2'] }}</td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endfor %} {% endblock %}

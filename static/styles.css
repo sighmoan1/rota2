@@ -41,23 +41,6 @@ h2 {
     margin-top: 40px;
 }
 
-table.calendar {
-    border-collapse: collapse;
-    width: 100%;
-    margin-bottom: 20px;
-}
-
-table.calendar th, table.calendar td {
-    border: 1px solid #ccc;
-    padding: 6px;
-    text-align: center;
-    vertical-align: top;
-}
-
-table.calendar th {
-    background-color: #f4f4f4;
-}
-
 .negative {
     color: red;
 }

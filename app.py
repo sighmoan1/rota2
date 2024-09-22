@@ -17,34 +17,41 @@ def read_staff_from_csv():
     staff = []
     with open('staff.csv', newline='') as csvfile:
         reader = csv.DictReader(csvfile)
-        for row in reader:
+        for idx, row in enumerate(reader):
             staff.append({
+                'id': idx,  # Assign a unique ID
                 'name': row['name'],
                 'region': row['region'],
                 'role': row['role'],
                 'fte': float(row['fte']),
+                # Initialize assigned shifts
                 'assigned_shifts': 0,
-                'weeknight_shifts': 0,
-                'weekend_shifts': 0,
-                'expected_weeknight_shifts': 0,
-                'expected_weekend_shifts': 0,
+                'assigned_shifts_weekday': 0,
+                'assigned_shifts_weekend': 0,
+                # Initialize expected shifts
+                'expected_shifts_weekday': 0,
+                'expected_shifts_weekend': 0,
+                'expected_shifts': 0,
+                # Initialize shift assignments
                 'shift_assignments': []
             })
     return staff
 
 staff = read_staff_from_csv()
 
-# Shifts per week
+# Shifts per day
 shifts = {
-    'Weeknight': {
-        'Duty Manager': 2,
-        'Tactical Lead': 2
-    },
-    'Weekend': {
-        'Duty Manager': 2,
-        'Tactical Lead': 2
-    }
+    'Monday': {'Duty Manager': 2, 'Tactical Lead': 2},
+    'Tuesday': {'Duty Manager': 2, 'Tactical Lead': 2},
+    'Wednesday': {'Duty Manager': 2, 'Tactical Lead': 2},
+    'Thursday': {'Duty Manager': 2, 'Tactical Lead': 2},
+    'Friday': {'Duty Manager': 2, 'Tactical Lead': 2},
+    'Saturday': {'Duty Manager': 2, 'Tactical Lead': 2},
+    'Sunday': {'Duty Manager': 2, 'Tactical Lead': 2},
 }
+
+def get_role_initials(role):
+    return ''.join([word[0] for word in role.split()]).upper()
 
 def calculate_total_fte(role):
     return sum(s['fte'] for s in staff if s['role'] == role)
@@ -52,37 +59,39 @@ def calculate_total_fte(role):
 def calculate_staff_quotas():
     total_weeks = 52
 
-    # Calculate total shifts per role and shift time over all weeks
-    total_shifts = {}
-    for shift_time in shifts:
-        for role in shifts[shift_time]:
-            total_shifts[(shift_time, role)] = shifts[shift_time][role] * total_weeks
+    # Calculate total shifts per role over all weeks
+    total_shifts_per_role_weekday = defaultdict(int)
+    total_shifts_per_role_weekend = defaultdict(int)
+    for day in shifts:
+        for role in shifts[day]:
+            if day in ['Saturday', 'Sunday']:
+                total_shifts_per_role_weekend[role] += shifts[day][role] * total_weeks
+            else:
+                total_shifts_per_role_weekday[role] += shifts[day][role] * total_weeks
 
     # Calculate total FTE per role
     total_fte_per_role = {role: calculate_total_fte(role) for role in roles}
 
-    # Calculate expected shifts per staff member for each shift time
+    # Calculate expected shifts per staff member
     for s in staff:
-        for shift_time in shifts:
-            role_total_shifts = total_shifts[(shift_time, s['role'])]
-            s_fte = s['fte']
-            role_total_fte = total_fte_per_role[s['role']]
+        s_fte = s['fte']
+        role_total_shifts_weekday = total_shifts_per_role_weekday[s['role']]
+        role_total_shifts_weekend = total_shifts_per_role_weekend[s['role']]
+        role_total_fte = total_fte_per_role[s['role']]
 
-            expected_shifts = (s_fte / role_total_fte) * role_total_shifts
-            expected_shifts = int(round(expected_shifts))
+        expected_shifts_weekday = (s_fte / role_total_fte) * role_total_shifts_weekday
+        expected_shifts_weekend = (s_fte / role_total_fte) * role_total_shifts_weekend
 
-            if shift_time == 'Weeknight':
-                s['expected_weeknight_shifts'] = expected_shifts
-            else:
-                s['expected_weekend_shifts'] = expected_shifts
+        s['expected_shifts_weekday'] = int(round(expected_shifts_weekday))
+        s['expected_shifts_weekend'] = int(round(expected_shifts_weekend))
+        s['expected_shifts'] = s['expected_shifts_weekday'] + s['expected_shifts_weekend']
 
-        # Reset assigned shifts
+        # Reset assigned shifts and assignments
         s['assigned_shifts'] = 0
-        s['weeknight_shifts'] = 0
-        s['weekend_shifts'] = 0
+        s['assigned_shifts_weekday'] = 0
+        s['assigned_shifts_weekend'] = 0
         s['shift_assignments'] = []
     return
-
 def assign_shifts():
     total_weeks = 52
     assignments = []
@@ -92,78 +101,92 @@ def assign_shifts():
     # Prepare staff lists per role
     staff_per_role = {role: [s for s in staff if s['role'] == role] for role in roles}
 
+    day_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
     for week in range(1, total_weeks + 1):
         week_assignments = {'Week': week, 'Shifts': {}}
-        for shift_time in shifts:
-            shift_assignments = {'Duty Manager': [], 'Tactical Lead': []}
-            regions_on_shift = set()
-            for role in shifts[shift_time]:
-                required_shifts = shifts[shift_time][role]
+        for day in day_order:
+            is_weekend = day in ['Saturday', 'Sunday']
+            shift_assignments = {}
+            regions_on_shift = set()  # Keep track of regions assigned on this day
+            for role in shifts[day]:
+                required_shifts = shifts[day][role]
+                shift_assignments[role] = [None] * required_shifts  # Initialize shifts
 
-                # Candidates are staff who have not exceeded their expected shifts
-                candidates = [s for s in staff_per_role[role]]
+                assigned_staff_for_day_role = set()  # To prevent assigning the same staff to multiple shifts in the same day and role
 
-                assigned = []
-                attempts = 0  # To prevent infinite loops
-                while len(assigned) < required_shifts and attempts < 200:
-                    attempts += 1
-                    # Filter candidates who have not exceeded their expected shifts
-                    if shift_time == 'Weeknight':
-                        candidates_available = [s for s in candidates if s['weeknight_shifts'] < s['expected_weeknight_shifts']]
-                    else:
-                        candidates_available = [s for s in candidates if s['weekend_shifts'] < s['expected_weekend_shifts']]
+                # Assign staff for each required shift
+                for shift_number in range(required_shifts):
+                    attempts = 0
+                    assigned = False
+                    while not assigned and attempts < 200:
+                        attempts += 1
 
-                    if not candidates_available:
-                        # If no candidates available, consider all staff (even those who have exceeded expected shifts)
-                        candidates_available = candidates
+                        # Candidates are staff who have not exceeded their expected shifts, not assigned today for this role, and from regions not already on shift
+                        if is_weekend:
+                            candidates = [s for s in staff_per_role[role]
+                                        if s['assigned_shifts_weekend'] < s['expected_shifts_weekend']
+                                        and s['id'] not in assigned_staff_for_day_role
+                                        and s['region'] not in regions_on_shift]
+                        else:
+                            candidates = [s for s in staff_per_role[role]
+                                        if s['assigned_shifts_weekday'] < s['expected_shifts_weekday']
+                                        and s['id'] not in assigned_staff_for_day_role
+                                        and s['region'] not in regions_on_shift]
 
-                    # Exclude staff from regions already assigned
-                    candidates_available = [s for s in candidates_available if s['region'] not in regions_on_shift]
+                        if not candidates:
+                            # Relax region constraint
+                            if is_weekend:
+                                candidates = [s for s in staff_per_role[role]
+                                            if s['assigned_shifts_weekend'] < s['expected_shifts_weekend']
+                                            and s['id'] not in assigned_staff_for_day_role]
+                            else:
+                                candidates = [s for s in staff_per_role[role]
+                                            if s['assigned_shifts_weekday'] < s['expected_shifts_weekday']
+                                            and s['id'] not in assigned_staff_for_day_role]
 
-                    if not candidates_available:
-                        # If still no candidates, we must relax the region constraint
-                        # Consider staff from the same region but have the least over-assigned shifts
-                        candidates_available = [s for s in candidates]
+                        if not candidates:
+                            # Consider all staff not assigned today for this role
+                            candidates = [s for s in staff_per_role[role]
+                                        if s['id'] not in assigned_staff_for_day_role]
 
-                        # Exclude staff already assigned in this shift
-                        candidates_available = [s for s in candidates_available if s not in assigned]
+                        # Sort candidates by the fewest over-assigned shifts and assigned shifts per FTE
+                        if is_weekend:
+                            candidates.sort(key=lambda x: (
+                                x['assigned_shifts_weekend'] - x['expected_shifts_weekend'],
+                                x['assigned_shifts']/x['fte']))
+                        else:
+                            candidates.sort(key=lambda x: (
+                                x['assigned_shifts_weekday'] - x['expected_shifts_weekday'],
+                                x['assigned_shifts']/x['fte']))
 
-                    # Sort candidates by the fewest over-assigned shifts and FTE
-                    if shift_time == 'Weeknight':
-                        candidates_available.sort(key=lambda x: (x['weeknight_shifts'] - x['expected_weeknight_shifts'], x['assigned_shifts']/x['fte']))
-                    else:
-                        candidates_available.sort(key=lambda x: (x['weekend_shifts'] - x['expected_weekend_shifts'], x['assigned_shifts']/x['fte']))
-
-                    # Assign the first candidate
-                    for s in candidates_available:
-                        if s not in assigned:
-                            assigned.append(s)
-                            regions_on_shift.add(s['region'])
+                        if candidates:
+                            s = candidates[0]
                             s['assigned_shifts'] += 1
-                            if shift_time == 'Weeknight':
-                                s['weeknight_shifts'] += 1
+                            if is_weekend:
+                                s['assigned_shifts_weekend'] += 1
                             else:
-                                s['weekend_shifts'] += 1
+                                s['assigned_shifts_weekday'] += 1
 
-                            # Record the shift assignment with day mapping
-                            if shift_time == 'Weeknight':
-                                days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday']
-                            else:
-                                days = ['Friday', 'Saturday', 'Sunday']
+                            # Record the shift assignment with shift number
+                            s['shift_assignments'].append({
+                                'Week': week,
+                                'Day': day,
+                                'Role': role,
+                                'Shift Number': shift_number + 1
+                            })
 
-                            for day in days:
-                                s['shift_assignments'].append({
-                                    'Week': week,
-                                    'Day': day,
-                                    'Shift Time': shift_time,
-                                    'Role': role
-                                })
+                            shift_assignments[role][shift_number] = s
+                            assigned_staff_for_day_role.add(s['id'])
+                            regions_on_shift.add(s['region'])
+                            assigned = True
+                        else:
+                            # If no staff can be assigned, leave shift as None
+                            assigned = True
 
-                            shift_assignments[role].append(s)
-                            break
-                    else:
-                        break  # Break if no one can be assigned
-            week_assignments['Shifts'][shift_time] = shift_assignments
+            # **Assign shifts for the current day**
+            week_assignments['Shifts'][day] = shift_assignments  # **Corrected Line**
+
         assignments.append(week_assignments)
     return assignments
 
@@ -188,7 +211,6 @@ def region_shifts_view():
                 'Week': shift['Week'],
                 'Day': shift['Day'],
                 'DayOrder': day_order[shift['Day']],
-                'Shift Time': shift['Shift Time'],
                 'Staff': s['name'],
                 'Role': s['role']
             })
@@ -200,6 +222,80 @@ def region_shifts_view():
 @app.route('/individual_shifts')
 def individual_shifts_view():
     return render_template('individual_shifts.html', staff=staff)
+
+@app.route('/patterns_by_role')
+def patterns_by_role_view():
+    # Prepare data per week, per role
+    patterns = {'Duty Manager': [], 'Tactical Lead': []}
+    day_names = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    for role in roles:
+        for week_data in assignments:
+            week = week_data['Week']
+            week_pattern = {'Week': week}
+            for day in day_names:
+                shifts = week_data['Shifts'][day][role]
+                for idx in range(2):
+                    staff_member = shifts[idx] if idx < len(shifts) and shifts[idx] else None
+                    role_initials = get_role_initials(role)
+                    key = f"{day} {role_initials} {idx + 1}"
+                    if staff_member:
+                        week_pattern[key] = f"{staff_member['name']} ({staff_member['region']})"
+                    else:
+                        week_pattern[key] = '-'
+            patterns[role].append(week_pattern)
+    return render_template('patterns_by_role.html', patterns=patterns)
+
+@app.route('/staff_list')
+def staff_list_view():
+    return render_template('staff_list.html', staff=staff)
+
+@app.route('/patterns_combined')
+def patterns_combined_view():
+    # Prepare data per week
+    patterns = []
+    day_names = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    for week_data in assignments:
+        week = week_data['Week']
+        week_pattern = {'Week': week}
+        for day in day_names:
+            for role in ['Duty Manager', 'Tactical Lead']:
+                shifts = week_data['Shifts'][day][role]
+                for idx in range(2):
+                    staff_member = shifts[idx] if idx < len(shifts) and shifts[idx] else None
+                    role_initials = get_role_initials(role)
+                    key = f"{day} {role_initials} {idx + 1}"
+                    if staff_member:
+                        week_pattern[key] = f"{staff_member['name']}"
+                    else:
+                        week_pattern[key] = '-'
+        patterns.append(week_pattern)
+    return render_template('patterns_combined.html', patterns=patterns)
+
+@app.route('/patterns_combined_with_regions')
+def patterns_combined_with_regions_view():
+    # Prepare data per week
+    patterns = []
+    day_names = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    for week_data in assignments:
+        week = week_data['Week']
+        week_pattern = {'Week': week}
+        for day in day_names:
+            regions_on_shift = set()
+            for role in ['Duty Manager', 'Tactical Lead']:
+                shifts = week_data['Shifts'][day][role]
+                for idx in range(2):
+                    staff_member = shifts[idx] if idx < len(shifts) and shifts[idx] else None
+                    role_initials = get_role_initials(role)
+                    key = f"{day} {role_initials} {idx + 1}"
+                    if staff_member:
+                        week_pattern[key] = f"{staff_member['name']} ({staff_member['region']})"
+                        regions_on_shift.add(staff_member['region'])
+                    else:
+                        week_pattern[key] = '-'
+            # Add the count of different regions on shift for the day
+            week_pattern[f"{day} Regions"] = len(regions_on_shift)
+        patterns.append(week_pattern)
+    return render_template('patterns_combined_with_regions.html', patterns=patterns)
 
 # Existing routes
 @app.route('/')
@@ -222,14 +318,10 @@ def calendar_view():
 
     for assignment in assignments:
         week = assignment['Week']
-        for shift_time, roles in assignment['Shifts'].items():
-            if shift_time == 'Weeknight':
-                days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday']
-            else:
-                days = ['Friday', 'Saturday', 'Sunday']
+        for day, roles in assignment['Shifts'].items():
             for role, staff_list in roles.items():
                 for staff_member in staff_list:
-                    for day in days:
+                    if staff_member:
                         calendar_data[week][day][role].append({
                             'name': staff_member['name'],
                             'region': staff_member['region']

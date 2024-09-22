@@ -20,8 +20,8 @@ block extra_head %}
       <th>Region</th>
       <th>Role</th>
       <th>FTE</th>
-      <th>Expected Weeknight Shifts</th>
-      <th>Assigned Weeknight Shifts</th>
+      <th>Expected Weekday Shifts</th>
+      <th>Assigned Weekday Shifts</th>
       <th>Difference</th>
       <th>Expected Weekend Shifts</th>
       <th>Assigned Weekend Shifts</th>
@@ -38,35 +38,32 @@ block extra_head %}
       <td>{{ s['region'] }}</td>
       <td>{{ s['role'] }}</td>
       <td>{{ s['fte'] }}</td>
-      <td>{{ s['expected_weeknight_shifts'] }}</td>
-      <td>{{ s['weeknight_shifts'] }}</td>
+      <td>{{ s['expected_shifts_weekday'] }}</td>
+      <td>{{ s['assigned_shifts_weekday'] }}</td>
       <td>
-        {% set diff_weeknight = s['weeknight_shifts'] -
-        s['expected_weeknight_shifts'] %}
+        {% set diff_weekday = s['assigned_shifts_weekday'] -
+        s['expected_shifts_weekday'] %}
         <span
-          class="{% if diff_weeknight < 0 %}negative{% elif diff_weeknight > 0 %}positive{% endif %}"
+          class="{% if diff_weekday < 0 %}negative{% elif diff_weekday > 0 %}positive{% endif %}"
         >
-          {{ diff_weeknight }}
+          {{ diff_weekday }}
         </span>
       </td>
-      <td>{{ s['expected_weekend_shifts'] }}</td>
-      <td>{{ s['weekend_shifts'] }}</td>
+      <td>{{ s['expected_shifts_weekend'] }}</td>
+      <td>{{ s['assigned_shifts_weekend'] }}</td>
       <td>
-        {% set diff_weekend = s['weekend_shifts'] - s['expected_weekend_shifts']
-        %}
+        {% set diff_weekend = s['assigned_shifts_weekend'] -
+        s['expected_shifts_weekend'] %}
         <span
           class="{% if diff_weekend < 0 %}negative{% elif diff_weekend > 0 %}positive{% endif %}"
         >
           {{ diff_weekend }}
         </span>
       </td>
+      <td>{{ s['expected_shifts'] }}</td>
+      <td>{{ s['assigned_shifts'] }}</td>
       <td>
-        {{ s['expected_weeknight_shifts'] + s['expected_weekend_shifts'] }}
-      </td>
-      <td>{{ s['weeknight_shifts'] + s['weekend_shifts'] }}</td>
-      <td>
-        {% set total_diff = (s['weeknight_shifts'] + s['weekend_shifts']) -
-        (s['expected_weeknight_shifts'] + s['expected_weekend_shifts']) %}
+        {% set total_diff = s['assigned_shifts'] - s['expected_shifts'] %}
         <span
           class="{% if total_diff < 0 %}negative{% elif total_diff > 0 %}positive{% endif %}"
         >

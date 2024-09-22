@@ -17,29 +17,23 @@ extra_head %}
   <thead>
     <tr>
       <th>Week</th>
-      <th>Shift Time</th>
+      <th>Day</th>
       <th>Role</th>
+      <th>Shift Number</th>
       <th>Staff Assigned</th>
     </tr>
   </thead>
   <tbody>
-    {% for week in assignments %} {% for shift_time, roles in
-    week['Shifts'].items() %} {% for role, staff_list in roles.items() %}
+    {% for week in assignments %} {% for day, roles in week['Shifts'].items() %}
+    {% for role in roles %} {% for staff_member in staff_list %}
     <tr>
       <td>{{ week['Week'] }}</td>
-      <td>{{ shift_time }}</td>
+      <td>{{ day }}</td>
       <td>{{ role }}</td>
-      <td>
-        <ul>
-          {% for staff in staff_list %}
-          <li>
-            {{ staff['name'] }} ({{ staff['region'] }}, FTE: {{ staff['fte'] }})
-          </li>
-          {% endfor %}
-        </ul>
-      </td>
+      <td>{{ loop.index }}</td>
+      <td>{{ staff_member.name if staff_member else 'Unassigned' }}</td>
     </tr>
-    {% endfor %} {% endfor %} {% endfor %}
+    {% endfor %} {% endfor %} {% endfor %} {% endfor %}
   </tbody>
 </table>
 {% endblock %}
