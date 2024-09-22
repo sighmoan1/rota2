@@ -17,28 +17,26 @@ extra_head %}
   <thead>
     <tr>
       <th>Week</th>
-      <th>Shift Time</th>
-      <th>DM 1</th>
-      <th>DM 2</th>
-      <th>TL 1</th>
-      <th>TL 2</th>
+      <th>Day</th>
+      <th>Role</th>
+      <th>Shift 1</th>
+      <th>Shift 2</th>
     </tr>
   </thead>
   <tbody>
-    {% for week in assignments %} {% for shift_time, roles in
-    week['Shifts'].items() %}
+    {% for week in assignments %} {% for day, roles in week['Shifts'].items() %}
+    {% for role in roles %}
     <tr>
       <td>{{ week['Week'] }}</td>
-      <td>{{ shift_time }}</td>
-      {% for role in ['Duty Manager', 'Tactical Lead'] %} {% for i in
-      range(shifts[shift_time][role]) %} {% if roles[role]|length > i %} {% set
-      staff_member = roles[role][i] %}
-      <td>{{ staff_member['name'] }} ({{ staff_member['region'] }})</td>
-      {% else %}
-      <td>-</td>
-      {% endif %} {% endfor %} {% endfor %}
+      <td>{{ day }}</td>
+      <td>{{ role }}</td>
+      {% for s in staff_list %}
+      <td>
+        {% if s %} {{ s['name'] }} ({{ s['region'] }}) {% else %} - {% endif %}
+      </td>
+      {% endfor %}
     </tr>
-    {% endfor %} {% endfor %}
+    {% endfor %} {% endfor %} {% endfor %}
   </tbody>
 </table>
 {% endblock %}
