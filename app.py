@@ -92,6 +92,7 @@ def calculate_staff_quotas():
         s['assigned_shifts_weekend'] = 0
         s['shift_assignments'] = []
     return
+
 def assign_shifts():
     total_weeks = 52
     assignments = []
@@ -192,58 +193,10 @@ def assign_shifts():
 
 assignments = assign_shifts()  # Generate assignments once to use in all views
 
-# Route for the shift schedule view
-@app.route('/schedule')
-def schedule_view():
-    return render_template('schedule.html', assignments=assignments, shifts=shifts)
-
-# Route for the manager's view
-@app.route('/region_shifts')
-def region_shifts_view():
-    # Prepare data: flatten shifts for sorting
-    region_shifts = []
-    day_order = {'Monday': 1, 'Tuesday': 2, 'Wednesday': 3, 'Thursday': 4,
-                 'Friday': 5, 'Saturday': 6, 'Sunday': 7}
-    for s in staff:
-        for shift in s['shift_assignments']:
-            region_shifts.append({
-                'Region': s['region'],
-                'Week': shift['Week'],
-                'Day': shift['Day'],
-                'DayOrder': day_order[shift['Day']],
-                'Staff': s['name'],
-                'Role': s['role']
-            })
-    # Sort the shifts by Week and DayOrder
-    region_shifts.sort(key=lambda x: (x['Week'], x['DayOrder']))
-    return render_template('region_shifts.html', region_shifts=region_shifts)
-
 # Route for the individual staff view
 @app.route('/individual_shifts')
 def individual_shifts_view():
     return render_template('individual_shifts.html', staff=staff)
-
-@app.route('/patterns_by_role')
-def patterns_by_role_view():
-    # Prepare data per week, per role
-    patterns = {'Duty Manager': [], 'Tactical Lead': []}
-    day_names = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-    for role in roles:
-        for week_data in assignments:
-            week = week_data['Week']
-            week_pattern = {'Week': week}
-            for day in day_names:
-                shifts = week_data['Shifts'][day][role]
-                for idx in range(2):
-                    staff_member = shifts[idx] if idx < len(shifts) and shifts[idx] else None
-                    role_initials = get_role_initials(role)
-                    key = f"{day} {role_initials} {idx + 1}"
-                    if staff_member:
-                        week_pattern[key] = f"{staff_member['name']} ({staff_member['region']})"
-                    else:
-                        week_pattern[key] = '-'
-            patterns[role].append(week_pattern)
-    return render_template('patterns_by_role.html', patterns=patterns)
 
 @app.route('/staff_list')
 def staff_list_view():

@@ -16,18 +16,19 @@ block content %}
   </thead>
   <tbody>
     {% for role in ['Duty Manager', 'Tactical Lead'] %}
+    <!-- Generate 2 rows for each shift -->
+    {% for shift_num in range(2) %}
     <tr>
-      <td>{{ role }}</td>
+      <td>{{ role }} {{ shift_num + 1 }}</td>
       {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
       'Saturday', 'Sunday'] %}
       <td>
-        {% for staff in week_data[day][role] %} {{ staff['name'] }} ({{
-        staff['region'] }})<br />
-        {% else %} &nbsp; {% endfor %}
+        {% if week_data[day][role] | length > shift_num %} {{
+        week_data[day][role][shift_num]['name'] }} {% else %} &nbsp; {% endif %}
       </td>
       {% endfor %}
     </tr>
-    {% endfor %}
+    {% endfor %} {% endfor %}
   </tbody>
 </table>
 {% endfor %} {% endblock %}
