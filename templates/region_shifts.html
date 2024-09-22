@@ -1,5 +1,25 @@
 {% extends "base.html" %} {% block title %}Region Shifts{% endblock %} {% block
-content %}
+extra_head %}
+<script>
+  $(document).ready(function () {
+    $("table.dataTable").DataTable({
+      pageLength: -1,
+      lengthMenu: [
+        [-1, 10, 25, 50],
+        ["All", 10, 25, 50],
+      ],
+      order: [
+        [1, "asc"],
+        [6, "asc"],
+      ], // Sort by Week and DayOrder
+      columnDefs: [
+        { orderData: [6], targets: 2 }, // Use DayOrder for Day column sorting
+        { visible: false, targets: 6 }, // Hide the DayOrder column
+      ],
+    });
+  });
+</script>
+{% endblock %} {% block content %}
 <h1>Region Shifts</h1>
 <table class="dataTable">
   <thead>
@@ -10,19 +30,23 @@ content %}
       <th>Shift Time</th>
       <th>Staff</th>
       <th>Role</th>
+      <th>DayOrder</th>
+      <!-- Hidden column for sorting -->
     </tr>
   </thead>
   <tbody>
-    {% for region, shifts in region_shifts.items() %} {% for shift in shifts %}
+    {% for shift in region_shifts %}
     <tr>
-      <td>{{ region }}</td>
+      <td>{{ shift['Region'] }}</td>
       <td>{{ shift['Week'] }}</td>
       <td>{{ shift['Day'] }}</td>
       <td>{{ shift['Shift Time'] }}</td>
       <td>{{ shift['Staff'] }}</td>
       <td>{{ shift['Role'] }}</td>
+      <td>{{ shift['DayOrder'] }}</td>
+      <!-- Hidden data for sorting -->
     </tr>
-    {% endfor %} {% endfor %}
+    {% endfor %}
   </tbody>
 </table>
 {% endblock %}

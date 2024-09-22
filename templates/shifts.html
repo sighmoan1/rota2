@@ -20,7 +20,9 @@ content %}
       <td>
         <ul>
           {% for staff in staff_list %}
-          <li>{{ staff.name }} ({{ staff.region }}, FTE: {{ staff.fte }})</li>
+          <li>
+            {{ staff['name'] }} ({{ staff['region'] }}, FTE: {{ staff['fte'] }})
+          </li>
           {% endfor %}
         </ul>
       </td>

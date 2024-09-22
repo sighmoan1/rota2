@@ -22,36 +22,39 @@ block content %}
   <tbody>
     {% for s in staff %}
     <tr>
-      <td>{{ s.name }}</td>
-      <td>{{ s.region }}</td>
-      <td>{{ s.role }}</td>
-      <td>{{ s.fte }}</td>
-      <td>{{ s.expected_weeknight_shifts }}</td>
-      <td>{{ s.weeknight_shifts }}</td>
+      <td>{{ s['name'] }}</td>
+      <td>{{ s['region'] }}</td>
+      <td>{{ s['role'] }}</td>
+      <td>{{ s['fte'] }}</td>
+      <td>{{ s['expected_weeknight_shifts'] }}</td>
+      <td>{{ s['weeknight_shifts'] }}</td>
       <td>
-        {% set diff_weeknight = s.weeknight_shifts - s.expected_weeknight_shifts
-        %}
+        {% set diff_weeknight = s['weeknight_shifts'] -
+        s['expected_weeknight_shifts'] %}
         <span
           class="{% if diff_weeknight < 0 %}negative{% elif diff_weeknight > 0 %}positive{% endif %}"
         >
           {{ diff_weeknight }}
         </span>
       </td>
-      <td>{{ s.expected_weekend_shifts }}</td>
-      <td>{{ s.weekend_shifts }}</td>
+      <td>{{ s['expected_weekend_shifts'] }}</td>
+      <td>{{ s['weekend_shifts'] }}</td>
       <td>
-        {% set diff_weekend = s.weekend_shifts - s.expected_weekend_shifts %}
+        {% set diff_weekend = s['weekend_shifts'] - s['expected_weekend_shifts']
+        %}
         <span
           class="{% if diff_weekend < 0 %}negative{% elif diff_weekend > 0 %}positive{% endif %}"
         >
           {{ diff_weekend }}
         </span>
       </td>
-      <td>{{ s.expected_weeknight_shifts + s.expected_weekend_shifts }}</td>
-      <td>{{ s.weeknight_shifts + s.weekend_shifts }}</td>
       <td>
-        {% set total_diff = (s.weeknight_shifts + s.weekend_shifts) -
-        (s.expected_weeknight_shifts + s.expected_weekend_shifts) %}
+        {{ s['expected_weeknight_shifts'] + s['expected_weekend_shifts'] }}
+      </td>
+      <td>{{ s['weeknight_shifts'] + s['weekend_shifts'] }}</td>
+      <td>
+        {% set total_diff = (s['weeknight_shifts'] + s['weekend_shifts']) -
+        (s['expected_weeknight_shifts'] + s['expected_weekend_shifts']) %}
         <span
           class="{% if total_diff < 0 %}negative{% elif total_diff > 0 %}positive{% endif %}"
         >

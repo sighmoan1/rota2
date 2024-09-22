@@ -1,0 +1,67 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.center {
+    text-align: center;
+}
+
+h1 {
+    text-align: center;
+}
+
+.nav a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: blue;
+}
+
+.nav a:hover {
+    text-decoration: underline;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 6px;
+    text-align: center;
+    vertical-align: top;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+h2 {
+    margin-top: 40px;
+}
+
+table.calendar {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+table.calendar th, table.calendar td {
+    border: 1px solid #ccc;
+    padding: 6px;
+    text-align: center;
+    vertical-align: top;
+}
+
+table.calendar th {
+    background-color: #f4f4f4;
+}
+
+.negative {
+    color: red;
+}
+
+.positive {
+    color: green;
+}

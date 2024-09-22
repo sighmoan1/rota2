@@ -7,6 +7,7 @@ block content %}
       <th>Name</th>
       <th>Region</th>
       <th>Role</th>
+      <th>FTE</th>
       <th>Weeknight Shifts</th>
       <th>Weekend Shifts</th>
       <th>Total Shifts</th>
@@ -15,20 +16,22 @@ block content %}
   <tbody>
     {% for s in staff %}
     <tr>
-      <td><a href="#{{ s.name }}">{{ s.name }}</a></td>
-      <td>{{ s.region }}</td>
-      <td>{{ s.role }}</td>
-      <td>{{ s.weeknight_shifts }}</td>
-      <td>{{ s.weekend_shifts }}</td>
-      <td>{{ s.weeknight_shifts + s.weekend_shifts }}</td>
+      <td><a href="#{{ s['name'] }}">{{ s['name'] }}</a></td>
+      <td>{{ s['region'] }}</td>
+      <td>{{ s['role'] }}</td>
+      <td>{{ s['fte'] }}</td>
+      <td>{{ s['weeknight_shifts'] }}</td>
+      <td>{{ s['weekend_shifts'] }}</td>
+      <td>{{ s['weeknight_shifts'] + s['weekend_shifts'] }}</td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
 
 {% for s in staff %}
-<div class="staff-member" id="{{ s.name }}">
-  <h2>{{ s.name }} ({{ s.region }}) - {{ s.role }}</h2>
+<div class="staff-member" id="{{ s['name'] }}">
+  <h2>{{ s['name'] }} ({{ s['region'] }}) - {{ s['role'] }}</h2>
+  <p><strong>FTE:</strong> {{ s['fte'] }}</p>
   <table class="dataTable">
     <thead>
       <tr>
@@ -39,7 +42,7 @@ block content %}
       </tr>
     </thead>
     <tbody>
-      {% for shift in s.shift_assignments %}
+      {% for shift in s['shift_assignments'] %}
       <tr>
         <td>{{ shift['Week'] }}</td>
         <td>{{ shift['Day'] }}</td>

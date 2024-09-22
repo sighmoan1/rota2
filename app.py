@@ -1,7 +1,6 @@
 from flask import Flask, render_template
 from collections import defaultdict
 import random
-from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -187,17 +186,23 @@ def schedule_view():
 # Route for the manager's view
 @app.route('/region_shifts')
 def region_shifts_view():
-    # Prepare data: map regions to their staff's shifts
-    region_shifts = defaultdict(list)
+    # Prepare data: flatten shifts for sorting
+    region_shifts = []
+    day_order = {'Monday': 1, 'Tuesday': 2, 'Wednesday': 3, 'Thursday': 4,
+                 'Friday': 5, 'Saturday': 6, 'Sunday': 7}
     for s in staff:
         for shift in s['shift_assignments']:
-            region_shifts[s['region']].append({
+            region_shifts.append({
+                'Region': s['region'],
                 'Week': shift['Week'],
                 'Day': shift['Day'],
+                'DayOrder': day_order[shift['Day']],
                 'Shift Time': shift['Shift Time'],
                 'Staff': s['name'],
                 'Role': s['role']
             })
+    # Sort the shifts by Week and DayOrder
+    region_shifts.sort(key=lambda x: (x['Week'], x['DayOrder']))
     return render_template('region_shifts.html', region_shifts=region_shifts)
 
 # Route for the individual staff view
@@ -217,26 +222,28 @@ def staff_view():
 # Route for weekly calendar view
 @app.route('/calendar')
 def calendar_view():
-    # Prepare data: group staff by region
-    staff_by_region = defaultdict(list)
-    for s in staff:
-        staff_by_region[s['region']].append(s)
+    # Prepare data per week
+    calendar_data = {}
+    day_names = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    for week in range(1, 53):
+        week_data = {day: {'Duty Manager': [], 'Tactical Lead': []} for day in day_names}
+        calendar_data[week] = week_data
 
-    # Map weeks to months (approximate, since weeks don't align perfectly with months)
-    week_to_month = {}
-    month_names = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-    ]
-    weeks_in_month = [4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 4, 5]  # Approximate weeks per month
-
-    week = 1
-    for month_index, weeks in enumerate(weeks_in_month):
-        for _ in range(weeks):
-            week_to_month[week] = month_names[month_index]
-            week += 1
-
-    return render_template('calendar.html', staff_by_region=staff_by_region, week_to_month=week_to_month)
+    for assignment in assignments:
+        week = assignment['Week']
+        for shift_time, roles in assignment['Shifts'].items():
+            if shift_time == 'Weeknight':
+                days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday']
+            else:
+                days = ['Friday', 'Saturday', 'Sunday']
+            for role, staff_list in roles.items():
+                for staff_member in staff_list:
+                    for day in days:
+                        calendar_data[week][day][role].append({
+                            'name': staff_member['name'],
+                            'region': staff_member['region']
+                        })
+    return render_template('calendar.html', calendar_data=calendar_data)
 
 if __name__ == '__main__':
     app.run(debug=True)

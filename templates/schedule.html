@@ -21,7 +21,7 @@ content %}
       {% for role in ['Duty Manager', 'Tactical Lead'] %} {% for i in
       range(shifts[shift_time][role]) %} {% if roles[role]|length > i %} {% set
       staff_member = roles[role][i] %}
-      <td>{{ staff_member.name }} ({{ staff_member.region }})</td>
+      <td>{{ staff_member['name'] }} ({{ staff_member['region'] }})</td>
       {% else %}
       <td>-</td>
       {% endif %} {% endfor %} {% endfor %}

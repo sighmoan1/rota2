@@ -2,43 +2,12 @@
 <html>
   <head>
     <title>{% block title %}Shift Rota{% endblock %}</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-      }
-      .center {
-        text-align: center;
-      }
-      h1 {
-        text-align: center;
-      }
-      .nav a {
-        margin: 0 10px;
-        text-decoration: none;
-        color: blue;
-      }
-      .nav a:hover {
-        text-decoration: underline;
-      }
-      table {
-        border-collapse: collapse;
-        width: 100%;
-        margin-bottom: 20px;
-      }
-      th,
-      td {
-        border: 1px solid #ccc;
-        padding: 6px;
-        text-align: center;
-        vertical-align: top;
-      }
-      th {
-        background-color: #f4f4f4;
-      }
-      h2 {
-        margin-top: 40px;
-      }
-    </style>
+    <!-- Link to external stylesheet -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
     <!-- Include jQuery and DataTables CSS and JS -->
     <link
       rel="stylesheet"
@@ -47,19 +16,7 @@
     />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="//cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    {% block extra_head %}
-    <script>
-      $(document).ready(function () {
-        $("table.dataTable").DataTable({
-          pageLength: -1,
-          lengthMenu: [
-            [-1, 10, 25, 50],
-            ["All", 10, 25, 50],
-          ],
-        });
-      });
-    </script>
-    {% endblock %}
+    {% block extra_head %}{% endblock %}
   </head>
   <body>
     <div class="nav center">

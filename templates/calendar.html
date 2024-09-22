@@ -1,52 +1,33 @@
 {% extends "base.html" %} {% block title %}Weekly Calendar{% endblock %} {%
-block extra_head %}
-<style>
-  /* Existing styles */
-</style>
-<script>
-  $(document).ready(function () {
-    $(".calendar-table").each(function () {
-      $(this).DataTable({
-        paging: false,
-        searching: false,
-        ordering: false,
-        info: false,
-        scrollX: true,
-      });
-    });
-  });
-</script>
-{% endblock %} {% block content %}
+block content %}
 <h1>Weekly Calendar View</h1>
 
-{% for month in week_to_month.values()|unique %}
-<h2>{{ month }}</h2>
-{% for region, staff_list in staff_by_region.items() %}
-<h3>{{ region }}</h3>
-<table class="dataTable calendar-table">
+{% for week, week_data in calendar_data.items() %}
+<h2>Week {{ week }}</h2>
+<table class="calendar">
   <thead>
     <tr>
-      <th>Staff</th>
-      {% for week in week_to_month if week_to_month[week] == month %}
-      <th>Week {{ week }}</th>
+      <th>Role / Day</th>
+      {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+      'Saturday', 'Sunday'] %}
+      <th>{{ day }}</th>
       {% endfor %}
     </tr>
   </thead>
   <tbody>
-    {% for s in staff_list %}
+    {% for role in ['Duty Manager', 'Tactical Lead'] %}
     <tr>
-      <td>{{ s.name }} ({{ s.role }})</td>
-      {% for week in week_to_month if week_to_month[week] == month %}
+      <td>{{ role }}</td>
+      {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+      'Saturday', 'Sunday'] %}
       <td>
-        {% set shifts_in_week = s.shift_assignments | selectattr('Week',
-        'equalto', week) | list %} {% if shifts_in_week %} {% for shift in
-        shifts_in_week %}
-        <div class="shift">{{ shift['Day'] }} - {{ shift['Role'] }}</div>
-        {% endfor %} {% else %} &nbsp; {% endif %}
+        {% for staff in week_data[day][role] %} {{ staff['name'] }} ({{
+        staff['region'] }})<br />
+        {% else %} &nbsp; {% endfor %}
       </td>
       {% endfor %}
     </tr>
     {% endfor %}
   </tbody>
 </table>
-{% endfor %} {% endfor %} {% endblock %}
+{% endfor %} {% endblock %}
