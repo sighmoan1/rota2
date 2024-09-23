@@ -1,0 +1,29 @@
+{% extends "base.html" %} {% block title %}Patterns by Day{% endblock %} {%
+block content %}
+<h1>Shift Patterns by Day</h1>
+
+<table class="dataTable">
+  <thead>
+    <tr>
+      <th>Week</th>
+      <th>Day of Week</th>
+      <th>DM 1</th>
+      <th>DM 2</th>
+      <th>TL 1</th>
+      <th>TL 2</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for pattern in patterns %}
+    <tr>
+      <td>{{ pattern['Week'] }}</td>
+      <td>{{ pattern['Day'] }}</td>
+      <td>{{ pattern['DM 1'] }}</td>
+      <td>{{ pattern['DM 2'] }}</td>
+      <td>{{ pattern['TL 1'] }}</td>
+      <td>{{ pattern['TL 2'] }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

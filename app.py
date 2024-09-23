@@ -224,11 +224,56 @@ def patterns_combined_view():
         patterns.append(week_pattern)
     return render_template('patterns_combined.html', patterns=patterns)
 
+@app.route('/patterns_by_day')
+def patterns_by_day_view():
+    """
+    Prepare data to display shifts with columns:
+    Week | Day of Week | DM 1 | DM 2 | TL 1 | TL 2
+    """
+    patterns = []
+    day_names = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    
+    for week_data in assignments:
+        week = week_data['Week']
+        for day in day_names:
+            shift_info = week_data['Shifts'][day]
+            # Initialize dictionary for the current row
+            pattern = {
+                'Week': week,
+                'Day': day,
+                'DM 1': '-',
+                'DM 2': '-',
+                'TL 1': '-',
+                'TL 2': '-'
+            }
+            
+            # Assign Duty Managers
+            dm_shifts = shift_info.get('Duty Manager', [])
+            for idx in range(2):
+                key = f'DM {idx + 1}'
+                if idx < len(dm_shifts) and dm_shifts[idx]:
+                    pattern[key] = dm_shifts[idx]['name']
+                else:
+                    pattern[key] = '-'
+            
+            # Assign Tactical Leads
+            tl_shifts = shift_info.get('Tactical Lead', [])
+            for idx in range(2):
+                key = f'TL {idx + 1}'
+                if idx < len(tl_shifts) and tl_shifts[idx]:
+                    pattern[key] = tl_shifts[idx]['name']
+                else:
+                    pattern[key] = '-'
+            
+            patterns.append(pattern)
+    
+    return render_template('patterns_by_day.html', patterns=patterns)
+
 @app.route('/patterns_combined_with_regions')
 def patterns_combined_with_regions_view():
     # Prepare data per week
     patterns = []
-    day_names = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    day_names = ['1', '2', '3', '4', '5', '6', '7']
     for week_data in assignments:
         week = week_data['Week']
         week_pattern = {'Week': week}
