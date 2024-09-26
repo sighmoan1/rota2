@@ -1,64 +1,66 @@
 name,region,role,fte
-C DM A,Central,Duty Manager,1
-C DM B,Central,Duty Manager,1
-C DM C,Central,Duty Manager,1
-C DM D,Central,Duty Manager,1
-C DM E,Central,Duty Manager,1
-C DM F (PT),Central,Duty Manager,0.5
-C DM G (PT),Central,Duty Manager,0.5
-C DM H (PT),Central,Duty Manager,0.5
-C DM I (PT),Central,Duty Manager,0.5
-L DM A,London,Duty Manager,1
-L DM B,London,Duty Manager,1
-L DM C (PT),London,Duty Manager,0.5
-L DM D (PT),London,Duty Manager,0.5
-N DM A,North,Duty Manager,1
-N DM B,North,Duty Manager,1
-N DM C,North,Duty Manager,1
-N DM D,North,Duty Manager,1
-N DM E,North,Duty Manager,1
-N DM F,North,Duty Manager,1
-NI DM A,Northern Ireland,Duty Manager,1
-NI DM B,Northern Ireland,Duty Manager,1
-S DM A,South,Duty Manager,1
-S DM B,South,Duty Manager,1
-S&C DM A,South and Channel Islands,Duty Manager,1
-S&C DM B,South and Channel Islands,Duty Manager,1
-S&C DM C,South and Channel Islands,Duty Manager,1
-S&C DM D,South and Channel Islands,Duty Manager,1
-SE DM A,South East,Duty Manager,1
-SE DM B,South East,Duty Manager,1
-SE DM C,South East,Duty Manager,1
-SE DM D,South East,Duty Manager,1
-SE DM E,South East,Duty Manager,1
-SE DM F,South East,Duty Manager,1
-W DM A,Wales,Duty Manager,1
-W DM B,Wales,Duty Manager,1
-W DM C (PT),Wales,Duty Manager,0.8
-Central Tac A,Central,Tactical Lead,1
-Central Tac B,Central,Tactical Lead,1
-Central Tac C,Central,Tactical Lead,1
-Central Tac D,Central,Tactical Lead,1
-London Tac A,London,Tactical Lead,1
-London Tac B,London,Tactical Lead,1
-London Tac C (PT),London,Tactical Lead,0.5
-NI Tac A,Northern Ireland,Tactical Lead,1
-NI Tac B,Northern Ireland,Tactical Lead,1
-North Tac A,North,Tactical Lead,1
-North Tac B,North,Tactical Lead,1
-North Tac C,North,Tactical Lead,1
-North Tac D,North,Tactical Lead,1
-North Tac E,North,Tactical Lead,1
-S&C Tac A,South and Channel Islands,Tactical Lead,1
-S&C Tac B,South and Channel Islands,Tactical Lead,1
-S&C Tac C,South and Channel Islands,Tactical Lead,1
-S&C Tac D,South and Channel Islands,Tactical Lead,1
-Scot Tac A,Scotland,Tactical Lead,1
-Scot Tac B,Scotland,Tactical Lead,1
-Scot Tac C,Scotland,Tactical Lead,1
-Sth E Tac A,South East,Tactical Lead,1
-Sth E Tac B,South East,Tactical Lead,1
-Sth E Tac C,South East,Tactical Lead,1
-Sth E Tac D,South East,Tactical Lead,1
-Wales Tac A,Wales,Tactical Lead,1
-Wales Tac B (PT),Wales,Tactical Lead,1
+DM01,Central,Duty Manager,0.5
+DM02,Central,Duty Manager,0.5
+DM03,London,Duty Manager,1
+DM04,South East,Duty Manager,1
+DM05,South East,Duty Manager,1
+DM06,North,Duty Manager,1
+DM07,Central,Duty Manager,1
+DM08,Scotland,Duty Manager,1
+DM09,London,Duty Manager,0.5
+DM10,South East,Duty Manager,1
+DM11,North,Duty Manager,0.5
+DM12,Central,Duty Manager,1
+DM13,South and Channels,Duty Manager,1
+DM14,North,Duty Manager,1
+DM15,Wales,Duty Manager,0.5
+DM16,London,Duty Manager,1
+DM17,Central,Duty Manager,0.5
+DM18,North,Duty Manager,0.5
+DM19,Northern Ireland,Duty Manager,1
+DM20,South East,Duty Manager,1
+DM21,South East,Duty Manager,1
+DM22,Wales,Duty Manager,1
+DM23,Central,Duty Manager,1
+DM24,North,Duty Manager,1
+DM25,North,Duty Manager,1
+DM26,Northern Ireland,Duty Manager,1
+DM27,North,Duty Manager,1
+DM28,Wales,Duty Manager,1
+DM29,London,Duty Manager,0.5
+DM30,Central,Duty Manager,0.5
+DM31,Central,Duty Manager,1
+DM32,South East,Duty Manager,1
+DM33,North,Duty Manager,1
+DM34,South and Channels,Duty Manager,1
+DM35,South and Channels,Duty Manager,1
+DM36,South and Channels,Duty Manager,1
+DM37,Central,Duty Manager,0.5
+DM38,London,Duty Manager,1
+TL01,South East,Tactical Lead,1
+TL02,South East,Tactical Lead,1
+TL03,South and Channels,Tactical Lead,1
+TL04,Central,Tactical Lead,1
+TL05,London,Tactical Lead,0.5
+TL06,South East,Tactical Lead,1
+TL07,South East,Tactical Lead,1
+TL08,North,Tactical Lead,1
+TL09,South and Channels,Tactical Lead,1
+TL10,Wales,Tactical Lead,0.5
+TL11,London,Tactical Lead,1
+TL12,North,Tactical Lead,1
+TL13,Scotland,Tactical Lead,1
+TL14,Northern Ireland,Tactical Lead,1
+TL15,Wales,Tactical Lead,1
+TL16,Northern Ireland,Tactical Lead,1
+TL17,Scotland,Tactical Lead,1
+TL18,Central,Tactical Lead,1
+TL19,Scotland,Tactical Lead,1
+TL20,Scotland,Tactical Lead,1
+TL21,North,Tactical Lead,1
+TL22,South and Channels,Tactical Lead,1
+TL23,North,Tactical Lead,1
+TL24,South and Channels,Tactical Lead,1
+TL25,North,Tactical Lead,1
+TL26,Central,Tactical Lead,1
+TL27,Central,Tactical Lead,1
